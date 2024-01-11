@@ -15,7 +15,7 @@ pipeline {
                     sh '''
                         sleep 5
                         echo "This is a BUILD stage $BRANCH_NAME"
-                        sudo composer install
+                        composer install
                         exit 1
                     '''
                 
