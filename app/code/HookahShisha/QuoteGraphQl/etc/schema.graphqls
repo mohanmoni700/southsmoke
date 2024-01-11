@@ -1,0 +1,8 @@
+#not used in magento, to connect direct to magento from frontend without service.
+type Cart {
+    checkoutUrl: String
+}
+
+input UpdateCartItemsInput {
+    is_checkout: Boolean @doc(description: "To check wheather request is from checkout")
+}

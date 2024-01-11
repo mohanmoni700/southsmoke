@@ -1,0 +1,117 @@
+// /**
+//  * Copyright © Magento, Inc. All rights reserved.
+//  * See COPYING.txt for license details.
+//  */
+
+//
+//  Common
+//  _____________________________________________
+
+& when (@media-common = true) {
+
+    //  Using buttons mixins
+    button,
+    a.action.primary {
+        .lib-css(border-radius, @button__border-radius);
+    }
+
+    a.action.primary {
+        .lib-link-as-button();
+    }
+
+    .action.primary,
+    .action-primary {
+        .lib-button-primary();
+        border-radius: 20px;
+        &:hover {
+            background: @hookah_theme_gradient;
+            border-color: transparent;
+            border-left-color: @border_left_gradient;
+            border-right-color: @border_right_gradient;
+        }
+    }
+
+    button.action.secondary,
+    button.action.secondary:hover {
+        background: transparent;
+        border: 1px solid @color-black;
+        border-radius: 50px;
+        color: @color-black;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 700;
+        min-height: 50px;
+        padding: 7px 25px;
+        text-transform: uppercase;
+        &:hover {
+            color: @color-white;
+            border-color: transparent;
+            background: @hookah_theme_gradient;
+            border-left-color: @border_left_gradient;
+            border-right-color: @border_right_gradient;
+        }
+    }
+    
+    .action-ouline-primary {
+        background-color: transparent;
+        border: solid 1px @color-black;
+        border-radius: 50px;
+        color: @color-black;
+        cursor: pointer;
+        display: inline-block;
+        display: inline-block;
+        font-size: 16px;
+        font-weight: @font-weight__bold;
+        line-height: 1;
+        padding: 16px 25px;
+        text-align: center;
+        text-decoration: none !important;
+        text-transform: uppercase;
+        &:hover,
+        &:active {
+            color: @color-white;
+            border-color: transparent;
+            background: @hookah_theme_gradient;
+            border-left-color: @border_left_gradient;
+            border-right-color: @border_right_gradient;
+        }
+        &.action-lg {
+            font-size: 20px;
+            padding: 14px 25px;
+        }
+        &.action-sm {
+            font-size: 14px;
+            padding: 8px 16px;
+        }
+        &.no-radius {
+            border-radius: 0;
+        }
+    }
+
+    @media only screen and (max-width: 360px) {
+        .action.primary,
+        .action-primary {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+    }
+}
+
+//
+//  Mobile
+//  _____________________________________________
+
+.media-width(@extremum, @break) when (@extremum = 'max') and (@break = @screen__m) {
+    .action-ouline-primary {
+        font-size: 10px;
+        padding: 8px 12px;
+        &.action-lg {
+            font-size: 10px;
+            padding: 8px 12px;
+        }
+        &.action-sm {
+            font-size: 10px;
+            padding: 8px 12px;
+        }
+    }
+}

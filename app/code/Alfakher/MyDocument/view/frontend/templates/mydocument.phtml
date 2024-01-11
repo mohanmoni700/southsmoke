@@ -1,0 +1,15 @@
+<?php
+$customerid = $block->getCustomerId();
+$customerdata=$block->getCustomercollection($customerid);
+$customeradd=$block->getCustomeraddress($customerid);
+$country=$customeradd->getData('country_id');
+$docdata=$block->getDocumentCollection($customerid); ?>
+    <?php if ($country=='US') { ?>
+        <div id="usa_customer" class="basic_details_tab">
+            <?= $block->getChildHtml('my_document_usa'); ?>
+        </div>
+    <?php } else { ?>
+        <div id="business_details" class="document_details_tab">
+            <?= $block->getChildHtml('my_document_non_usa'); ?>
+        </div>
+    <?php } ?>

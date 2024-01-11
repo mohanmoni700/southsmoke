@@ -1,0 +1,247 @@
+<?php
+// phpcs:disable Magento2.Templates.ThisInTemplate
+/**
+ * @var \HookahShisha\Customerb2b\Block\Account\MyProducts $block
+ */
+?>
+<?php
+use Magento\Framework\App\Action\Action;
+
+/** @var \Magento\Catalog\Helper\Output $_helper */
+$_helper = $this->helper(\Magento\Catalog\Helper\Output::class);
+$priceHelper = $this->helper(\Magento\Framework\Pricing\Helper\Data::class);
+?>
+<!-- Check the Document is verified or not vy -->
+        <?php $_helperB2b = $this->helper(Alfakher\Productpageb2b\Helper\Data::class);
+               $docdata = $_helperB2b->getDocMessageData();
+               $is_document_upload = $_helperB2b->getDocuments();
+               $doc_expired = $_helperB2b->getExpiryMsg();
+               $IsFinanceVerified=$_helperB2b->getIsFinanceVerified();
+        ?>
+<div class="block-title page-title">
+    <h1><?= $block->escapeHtmlAttr(__('My Product Pricing')) ?></h1>
+</div>
+
+<div class="table-wrapper myproduct-pricing">
+    <table class="data table table-myproduct-pricing" id="myproduct-pricing-table">
+        <caption class="table-caption"><?= $block->escapeHtml(__('Product Pricing')) ?></caption>
+        <thead>
+            <tr>
+                <th class="col name"><?= $block->escapeHtml(__('Item')) ?></th>
+                <?php
+                /*
+                Here we removed the condition of the
+                Document verified( $is_document_upload $doc_expired)
+                and uploaded($IsFinanceVerified)
+                Here we removed the condition of the Document
+                verified( $is_document_upload $doc_expired) and uploaded($IsFinanceVerified)
+                */
+                ?>
+                <?php if ($IsFinanceVerified == 1): ?>
+                <th class="col sku"><?= $block->escapeHtml(__('Actual Price')) ?></th>
+                <th class="col price"><?= $block->escapeHtml(__('Special Price')) ?></th>
+                <th class="col qty"><?= $block->escapeHtml(__('Qty')) ?></th>
+                <th class="col action"><?= $block->escapeHtml(__('Action')) ?></th>
+                <?php endif; ?>
+            </tr>
+        </thead>
+        <?php
+            $sharedCatalog = $block->getSharedCatalogCollection();
+        ?>
+        <?php if (count($sharedCatalog)): ?>
+            <?php foreach ($sharedCatalog as $_product):?>
+                <tbody>
+                    <tr id="order-item-row-<?= (int) $_product->getId() ?>">
+                        <td class="col name" data-th="<?= $block->escapeHtml(__('Product Name')) ?>">
+                            <?php
+                            $productImage = $block->getImage($_product, 'category_page_list');
+                            $pos = $block->getPositioned();
+                            if ($pos != null) {
+                                $position = 'left:' . $productImage->getWidth() . 'px;'
+                                    . 'top:' . $productImage->getHeight() . 'px;';
+                            }
+                            ?>
+                            <?php // Product Image ?>
+                            <div class="product_box_info">
+                                <?= $productImage->toHtml() ?>
+                                <div class="merge_box">
+                                <strong class="product name product-item-name">
+                                <?=/* @noEscape */ $_helper->productAttribute($_product, $_product->getName(), 'name')?>
+                                </strong>
+                                <strong class="product sku product-item-sku">
+                                <?= $block->escapeHtml(__('SKU:')) ?> 
+                                <?= /* @noEscape */ $_product->getSku() ?>
+                                </strong>
+                                </div>
+                            </div>
+                        </td>
+                        <?php
+                        /*
+                        Here we removed the condition of the
+                        Document verified( $is_document_upload $doc_expired)
+                        and uploaded($IsFinanceVerified)
+                        Here we removed the condition of the Document
+                        verified( $is_document_upload $doc_expired)
+                        and uploaded($IsFinanceVerified)
+                        */
+                        ?>
+                        <?php if ($IsFinanceVerified == 1): ?>
+                            <?php
+                            $regularPrice = $_product->getPriceInfo()
+                            ->getPrice('regular_price')->getAmount()
+                            ->getValue();
+                            $specialprice = $_product->getPriceInfo()
+                            ->getPrice('final_price')->getAmount()
+                            ->getValue();
+                            ?>
+
+                        <td class="col actual-price" data-th="<?= $block->escapeHtml(__('Actual Price')) ?>">
+                            <span class="old-price">
+                                <span class="price-container price-final_price tax weee">
+                                    <span id="old-price-<?= /* @noEscape */ $_product->getId() ?>"
+                                        data-price-amount="<?= /* @noEscape */ $regularPrice ?>"
+                                        data-price-type="oldPrice"
+                                        class="price-wrapper ">
+                                        <span class="price"><?= /* @noEscape */
+                                        $priceHelper->currency($regularPrice, true, false); ?></span>
+                                    </span>
+                                </span>
+                            </span>
+                        </td>
+
+                        <td class="col special-price" data-th="<?= $block->escapeHtml(__('Special Price')) ?>">
+                            <span class="special-price">
+                                <span class="price-container price-final_price tax weee">
+                                <span id="product-price-<?= /* @noEscape */ $_product->getId() ?>"
+                                    data-price-amount="<?= /* @noEscape */ $regularPrice ?>"
+                                    data-price-type="finalPrice"
+                                    class="price-wrapper ">
+                                    <span class="price">
+                                    <?= /* @noEscape */ $priceHelper->currency($specialprice, true, false); ?></span>
+                                </span>
+                                </span>
+                            </span>
+                        </td>
+                            <?php $postParams = $block->getAddToCartPostParams($_product); ?>
+                            <?php if ($_product->isSaleable()) { ?>
+                        <form data-role="tocart-form"
+                                  data-product-sku="<?= $escaper->escapeHtml($_product->getSku()) ?>"
+                                  action="<?= $escaper->escapeUrl($postParams['action']) ?>"
+                                  method="post"
+                                  id="my-product-price"
+                                  >
+                            <td class="col qty" data-th="<?= $block->escapeHtml(__('Qty')) ?>">
+                                <input type="number" name="qty-clone" id="qty-clone"
+                                value="0" title="Qty" class="input-text qty"
+                                data-id ="<?= $escaper->escapeHtml($_product->getId())?>" onclick="this.select();">
+                                <span id="err-msg-<?= $escaper->escapeHtml($_product->getId())?>"
+                                    style="color: red;">
+                                </span>
+                            </td>
+
+                            <td class="col action" data-th="<?= $block->escapeHtml(__('Subtotal')) ?>">
+                                <div class="actions-primary">
+                                        
+                                <input type="hidden"
+                                       name="product"
+                                       value="<?= /* @noEscape */ $postParams['data']['product'] ?>">
+                                <input type="hidden"
+                                name="<?= /* @noEscape */ Action::PARAM_NAME_URL_ENCODED ?>"
+                                value="<?= /* @noEscape */ $postParams['data'][Action::PARAM_NAME_URL_ENCODED] ?>">
+
+                                <input type="hidden" name="qty" 
+                                        id="qty-<?= $escaper->escapeHtml($_product->getId()) ?>"
+                                        title="Qty"
+                                        class="input-text qty qty-<?= $escaper->escapeHtml($_product->getId())?>"
+                                        value=""/><?= $block->getBlockHtml('formkey') ?>
+                                
+                                <button style="background: transparent;
+                                margin-top: 0;letter-spacing: 0;
+                                text-transform: none;" type="submit"
+                                        title="<?= $escaper->escapeHtmlAttr(__('Add to Cart')) ?>"
+                                        class="action tocart primary"
+                                        id="cart-<?= $escaper->escapeHtml($_product->getId()) ?>"
+                                        disabled>
+                                    <span><?= $escaper->escapeHtml(__('Add to Cart')) ?></span>
+                                </button>
+                            </td>   
+                        </form>
+                        <?php } else { ?>
+                            <td class="col qty"></td>
+                            <td class="col action" data-th="<?= $block->escapeHtml(__('Subtotal')) ?>">
+                                <div class="stock unavailable">
+                                    <span><?= $escaper->escapeHtml(__('Out of stock')) ?></span>
+                                </div>
+                            </td>
+                        <?php } ?>
+                        <?php endif; ?> 
+                    </tr>
+                </tbody>
+            <?php endforeach; ?>
+            <?php // phpcs:disable ?>
+            <script type="text/x-magento-init">
+                {
+                    "[data-role=tocart-form], .form.map.checkout": {
+                        "catalogAddToCart": {
+                            "product_sku": "<?= $escaper->escapeJs($_product->getSku()) ?>"
+                        }
+                    }
+                }
+            </script>
+            <?php // phpcs:enable ?>
+        <?php else: ?>
+            <div class="alert"><?= $block->escapeHtml(__('No Data Found')) ?></div>
+        <?php endif; ?>
+        <tfoot>
+            <?php if ($block->getPagerHtml()): ?>
+                <div class="order-products-toolbar toolbar bottom">
+                    <?= $block->getPagerHtml() ?>
+                </div>
+        <?php endif ?>
+        </tfoot>
+    </table>
+</div>
+
+<script>
+    require(['jquery'], function ($) 
+    {
+        $(document).ready(function(){
+            $(".input-text.qty").change(function() {
+                if(this.value < 0) {
+                    $(this).val(1);
+                } 
+                else {
+                    $('.qty-'+$(this).data("id")).val(this.value);
+                }
+            }); 
+        });
+
+        $(".action.tocart.primary").click(function(){
+           $('div.message-error.error.message').remove();
+        });
+    });
+</script>
+
+<script>
+require([
+    'jquery',
+    'mage/mage'
+], function($){
+
+   jQuery("[id^='cart-']").on('click', function(){
+        
+        var id = $(this).attr('id');
+        var splitid = id.split("-");
+        var qty = jQuery("#qty-"+splitid[1]).val();
+        if(qty == 0 || qty == ''){
+        jQuery("#err-msg-"+splitid[1]).html("Please add 1 or more products");
+            return false;
+        }
+        else{
+        jQuery("#err-msg-"+splitid[1]).html("");
+            return true;
+        }
+
+        });         
+    });
+</script>

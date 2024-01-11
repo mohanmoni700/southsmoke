@@ -1,0 +1,184 @@
+// /**
+//  * Copyright © Magento, Inc. All rights reserved.
+//  * See COPYING.txt for license details.
+//  */
+
+//
+//  Common
+//  _____________________________________________
+
+& when (@media-common = true) {
+   /* ==========  Footer Start here ============*/
+   .footer_newsletter {
+        .form.subscribe {
+            h3 {
+                font-family: unset;
+            }
+        }
+   }
+    .footer_links {
+        ul {
+            li {
+                a {
+                    &:hover {
+                        color: @color_primary;
+                    }
+                }
+            }
+        }
+    }
+    .address_info {
+        ul {
+            li {
+                .call_link {
+                    span.whatsapp {
+                        &:before {
+                            .lib-css(height, 23px);
+                            .lib-css(top, -2px);
+                            .lib-css(width, 23px);
+                            background:url('@{baseDir}images/whatsapp.png')  no-repeat;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .footer_social {
+        ul {
+            li {
+                .sicon {
+                    &.tiktok {
+                        .lib-css(background-size, contain);
+                        .lib-css(height, 17px);
+                        .lib-css(width, 15px);
+                        background-image: url('@{baseDir}images/tiktok.svg');
+                    }
+                }
+            }
+        }
+    }
+    // homepage pop up
+
+    .modals-wrapper {
+        .modal-popup.custom-window-block {
+            .modal-header {
+                padding: 0;
+                .modal-title {
+                    border: 0;
+                    padding: 0;
+                }
+                .action-close {
+                    .lib-css(padding-top, 5px);
+                    .lib-css(padding-bottom, 0);
+                    .lib-css(z-index, 99);
+                }
+            }
+            .modal-inner-wrap {
+                .field.newsletter,
+                .block.newsletter {
+                    .action.subscribe {
+                        background: @color-black;
+                        font-size: initial;
+                        height: auto;
+                        padding-left: 0;
+                        width: 100%; 
+                        border-radius: 30px;
+                        &:hover {
+                            background: @hookah_theme_gradient;
+                            border-left-color: @secondary-color;
+                            border-right-color: @color_primary;
+                        }
+                        span {
+                            display: block;
+                        }
+                    }
+                    .actions {
+                        display: block;
+                        margin-top: 10px;
+                        max-width: 200px;
+                        position: unset;
+                        width: 100%;
+                    }
+                }
+            }
+            .modal-content {
+                overflow-x: hidden;
+            }
+        }
+    }
+}
+
+& when (@media-target = 'mobile'), (@media-target = 'all') {
+    
+    @media only screen and (min-width: 768px) and (max-width: 1024px) {
+        [lang="de"] .footer_logo .address_info {
+            .lib-css(margin-bottom, (@indent__l + @indent__s));
+        }
+        [lang="en"] .footer_logo .address_info {
+            .lib-css(margin-bottom,  (@indent__l + @indent__s));
+        }
+        [lang="es"] .footer_logo .address_info { 
+            .lib-css(margin-bottom,  (@indent__l + @indent__s));
+        }
+    }
+}
+//
+//  Desktop
+//  _____________________________________________
+
+.media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__m) {
+
+    .modals-wrapper {
+        .modal-popup.custom-window-block {
+            .modal-inner-wrap {
+                max-width: 500px;
+                width: 100%;    
+                .field.newsletter,
+                .block.newsletter {
+                    max-width: 100%;
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
+.media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__l) {
+    [lang="de"] .footer_logo .address_info {
+        .lib-css(margin-bottom, 78px);
+    }
+    [lang="en"] .footer_logo .address_info {
+        .lib-css(margin-bottom,  78px);
+    }
+    [lang="es"] .footer_logo .address_info { 
+        .lib-css(margin-bottom,  78px);
+    }
+}
+//
+//  Mobile
+//
+.media-width(@extremum, @break) when (@extremum = 'max') and (@break = @screen__m) {
+    .page-footer {
+        .footer_social {
+            ul {
+                li {
+                    .sicon {
+                        &.tiktok {
+                            .lib-css(background-size, contain);
+                            .lib-css(height, 23px);
+                            .lib-css(width, 20px);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    [lang="de"] .footer_logo .address_info {
+        .lib-css(margin-bottom, @indent__m);
+    }
+    [lang="en"] .footer_logo .address_info {
+        .lib-css(margin-bottom,  @indent__m);
+    }
+    [lang="es"] .footer_logo .address_info { 
+        .lib-css(margin-bottom,  @indent__m);
+    }
+}

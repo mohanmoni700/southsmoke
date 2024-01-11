@@ -1,0 +1,107 @@
+<?php
+// phpcs:disable Magento2.Templates.ThisInTemplate
+/** @var $block \Magento\Catalog\Block\Product\View */
+?>
+<?php $_product = $block->getProduct(); ?>
+<?php $buttonTitle = __('Add to Cart'); ?>
+<?php $_helperB2b = $this->helper(Alfakher\Productpageb2b\Helper\Data::class); ?>
+<?php $is_mobile = $_helperB2b->isMobileDevice();?>
+<?php $IsFinanceVerified = $_helperB2b->getIsFinanceVerified();?>
+
+<?php if ($_helperB2b->isCustomerLoggedIn()): ?>
+    <?php if ($_product->isSaleable()):?>
+<div class="box-tocart">
+    <div class="fieldset">
+        <?php if ($IsFinanceVerified == 1): ?>
+            <?php if ($block->shouldRenderQuantity()):?>
+        <div class="field qty required">
+            <label class="label" for="qty"><span><?= $block->escapeHtml(__('Qty')) ?></span></label>
+            <div class="control">
+                <?php
+                
+                if ($is_mobile):
+                    //Write your code here for Mobile view
+                    $qtyCounter=$block->getProductDefaultQty() * 1 ;
+                    $dataValidate=json_encode($block->getQuantityValidators());
+                    ?>
+                    <select 
+                        class="input-text qty" 
+                        name="qty" 
+                        id="qty" 
+                        data-validate="<?= /* @noEscape */ $block->escapeHtml($dataValidate) ?>">
+                        <?php for ($qtyCounter; $qtyCounter<=100; $qtyCounter++):
+                            $selected='';
+                            if (($block->getProductDefaultQty() * 1) == $qtyCounter):
+                                $selected='selected';
+                            endif; ?>
+                            <option value="<?= /* @noEscape */ $qtyCounter; ?>"
+                                <?= /* @noEscape */  $selected; ?>>
+                                <?= /* @noEscape */ $qtyCounter; ?>
+                            </option>
+                        <?php endfor; ?>
+                    </select> 
+                    <?php else:
+                        $dataValidate=json_encode($block->getQuantityValidators());
+                        ?>
+                
+                 <input type="number"
+                       name="qty"
+                       id="qty"
+                       min="0"
+                       value="<?= /* @noEscape */ $block->getProductDefaultQty() * 1 ?>"
+                       title="<?= /* @noEscape */ $block->escapeHtmlAttr(__('Qty')) ?>"
+                       class="input-text qty err-show"
+                       data-validate="<?= /* @noEscape */ $block->escapeHtml($dataValidate) ?>"
+                       onclick="this.select();"
+                       /> 
+                  <?php endif; ?>  
+            </div>
+        </div>
+        <?php endif; ?>
+        <div class="actions">
+            <button type="submit"
+                    title="<?= $block->escapeHtmlAttr($buttonTitle) ?>"
+                    class="action primary tocart"
+                    id="product-addtocart-button" disabled>
+                <span><?= $block->escapeHtml($buttonTitle) ?></span>
+            </button>
+                <?= $block->getChildHtml('', true) ?>
+        </div>
+        <?php endif; ?>        
+    </div>
+</div>
+    <?php endif; ?>
+<script type="text/x-magento-init">
+    {
+        "#product_addtocart_form": {
+            "Magento_Catalog/js/validate-product": {}
+        }
+    }
+</script>
+<?php else:?>
+    <div class="box-tocart">
+        <div class="actions-primary">
+            <div class="logged-in-action">
+                <a
+                href="<?= /* @noEscape */ $block->getUrl('customer/account/login') ?>">
+                <?= $block->escapeHtml(__('Signin / Register')) ?></a>
+            </div>
+        </div>
+    </div>
+<?php endif;?>
+<script>
+    require(['jquery'], function ($) {
+        jQuery(".err-show").on('keyup', function(){
+
+            var regex = new RegExp("^[0-9]+$");
+            if (regex.test(this.value)) {
+                var requestQty = this.value;
+                if(requestQty < 0){
+                    $(this).val(1);
+                }
+            } else {
+                $(this).val(1);
+            }  
+        });
+    });
+</script>

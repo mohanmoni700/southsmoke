@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <preference for="Smartwave\Megamenu\Block\Topmenu" type="HookahShisha\Customization\Block\Topmenu" />
+
+    <preference for="Magento\CheckoutStaging\Plugin\PaymentInformationManagementPlugin" type="HookahShisha\Customization\Plugin\PaymentInformationManagementPlugin" />
+
+    <type name="Magento\Sales\Controller\Order\PrintAction">
+        <plugin name="magetrend-order-pdf-replace-print"
+                type="Magetrend\PdfTemplates\Plugin\Sales\Controller\Order\PrintAction"
+                sortOrder="10" disabled="true"/>
+    </type>
+    <type name="Magento\Sales\Controller\Order\PrintCreditmemo">
+        <plugin name="magetrend-creditmemo-pdf-replace-print"
+                type="Magetrend\PdfTemplates\Plugin\Sales\Controller\Order\PrintCreditmemo"
+                sortOrder="10" disabled="true"/>
+    </type>
+    <type name="Magento\Sales\Controller\Order\PrintShipment">
+        <plugin name="magetrend-shipment-pdf-replace-print"
+                type="Magetrend\PdfTemplates\Plugin\Sales\Controller\Order\PrintShipment"
+                sortOrder="10" disabled="true"/>
+    </type>
+    <!-- Company field search adding on the customer grid -->
+    <preference for="Magento\Customer\Model\ResourceModel\Grid\Collection"
+    type="HookahShisha\Customization\Model\ResourceModel\Grid\Collection" />
+
+    <type name="Magento\Catalog\Block\Product\AbstractProduct">
+        <plugin name="mpproductlabels_product" type="Mageplaza\ProductLabels\Plugin\Block\AbstractProduct" disabled="true"/>
+    </type>
+
+    <!-- Add Company Name in order invoice pdf -->
+    <type name="Magetrend\PdfTemplates\Model\Pdf\Filter">
+       <plugin name="custom_magetrend_pdftemplates" type="HookahShisha\Customization\Model\Pdf\Filter" />
+    </type>
+    <type name="Magento\ImportExport\Controller\Adminhtml\Import\Index">
+        <plugin name="warning_meassage_import" type="HookahShisha\Customization\Controller\Adminhtml\Import\Index" />
+    </type>
+
+    <preference for="Magetrend\PdfTemplates\Model\Pdf\Invoice"
+    type="HookahShisha\Customization\Model\Pdf\Invoice" />
+
+    <!-- disabled the mageworx plugin for bundleproducts -->
+    <type name="Magento\Bundle\Block\Adminhtml\Sales\Order\View\Items\Renderer">
+        <plugin name="mageworx_order_editor_update_bundle_item_renderer"
+                type="MageWorx\OrderEditor\Plugin\Block\Sales\Adminhtml\Order\View\Items\BundleRenderer"
+                disabled="true"/>
+    </type>
+    <!-- added plugin to set template for bundle products -->
+    <type name="Magento\Bundle\Block\Adminhtml\Sales\Order\View\Items\Renderer">
+        <plugin name="subtotalAfterPlugin" type="HookahShisha\Customization\Plugin\BundleRenderer"/>
+    </type>
+
+    <type name="Amasty\RequestQuote\Model\Pdf\PdfInformation">
+        <arguments>
+            <argument name="variables" xsi:type="array">
+                <item name="9" xsi:type="array">
+                    <item name="objectType" xsi:type="string">quote</item>
+                    <item name="variable" xsi:type="const">\Amasty\RequestQuote\Model\Source\PdfVariables::QUOTE_DATE</item>
+                    <item name="method" xsi:type="string">getSubmitedDate</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Amasty\RequestQuote\Model\Quote">
+        <plugin name="date_format_quote" type="HookahShisha\Customization\Model\Quote" />
+    </type>
+
+    <!-- incl tax price for bundle product in invoice pdf -->
+    <type name="Magetrend\PdfTemplates\Model\Pdf\Element\Items\Renderer\Bundle">
+        <plugin name="incl_tax_bundle" type="HookahShisha\Customization\Model\Pdf\Bundle" />
+    </type>
+
+    <!-- Disable the magetrand invoice pdf plugin-->
+    <type name="Magento\Sales\Model\Order\Pdf\Invoice">
+        <plugin name="magetrend-invoice-pdf" disabled="true"/>
+    </type>
+    <!-- override the magetrand invoice pdf plugin-->
+    <type name="Magento\Sales\Model\Order\Pdf\Invoice">
+        <plugin name="overwrite_magetrend-invoice-pdf"
+                type="HookahShisha\Customization\Plugin\Magetrend\Order\Pdf\MagetrendInvoice" />
+    </type>
+
+</config>

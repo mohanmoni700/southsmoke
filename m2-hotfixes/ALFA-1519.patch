@@ -1,0 +1,62 @@
+Index: app/code/Avalara/Excise/Model/Tax/TaxCalculation.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetE
+<+>UTF-8
+===================================================================
+diff --git a/app/code/Avalara/Excise/Model/Tax/TaxCalculation.php b/app/code/Avalara/Excise/Model/Tax/TaxCalculation.php
+--- a/app/code/Avalara/Excise/Model/Tax/TaxCalculation.php
++++ b/app/code/Avalara/Excise/Model/Tax/TaxCalculation.php
+@@ -222,8 +222,7 @@
+      */
+     protected function getAppliedTaxes($lineItem, $scope, $useBaseCurrency = false)
+     {     
+-        $extensionAttributes = $lineItem->getExtensionAttributes();
+-        $exciseResponse = $this->processExciseResponseData($extensionAttributes->getTaxBreakdown());
++        $exciseResponse = $this->processExciseResponseData($lineItem);
+ 
+         return $exciseResponse;
+     }
+@@ -246,8 +245,13 @@
+      /**
+      * @codeCoverageIgnore
+      */
+-    private function processExciseResponseData($response)
++    private function processExciseResponseData($lineItem)
+     {
++        $extensionAttributes = $lineItem->getExtensionAttributes();
++        $response = $extensionAttributes->getExciseResponse();
++        $itemCode = $lineItem->getCode();
++        $itemSequenceId = substr($itemCode, strrpos($itemCode, '-' ) + 1);
++
+         $responseData = json_decode((string)$response, true);
+         $taxArray = [];
+         
+@@ -255,7 +259,10 @@
+             return $taxArray;
+         }
+ 
+-        foreach ($responseData as $transactionTaxes) {
++        foreach ($responseData['TransactionTaxes'] as $transactionTaxes) {
++            if($itemSequenceId != $transactionTaxes['TransactionLine']) {
++                continue;
++            }
+             $arrayKey = $transactionTaxes['TaxType']."_".$transactionTaxes['RateDescription'];
+             $jurisdictionCode = $transactionTaxes['Jurisdiction'];
+             $taxType = $transactionTaxes['TaxType'];
+Index: vendor/mageworx/module-ordereditorbase/Model/Order/Item.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetE
+<+>UTF-8
+===================================================================
+diff --git a/vendor/mageworx/module-ordereditorbase/Model/Order/Item.php b/vendor/mageworx/module-ordereditorbase/Model/Order/Item.php
+--- a/vendor/mageworx/module-ordereditorbase/Model/Order/Item.php
++++ b/vendor/mageworx/module-ordereditorbase/Model/Order/Item.php
+@@ -1247,7 +1247,7 @@
+         /** @var \MageWorx\OrderEditor\Model\Order\Tax\Item $taxItem */
+         foreach ($taxItems as $taxItem) {
+             $rateCode = $taxItem->getData('code');
+-            if (!in_array($rateCode, $taxRates)) {
++            if (!in_array($rateCode, $taxRates) && strpos($rateCode, "AVATAX-TX-") === false) {
+                 try {
+                     // Delete the tax item first, because it has reference for the tax table
+                     $taxItem->delete();

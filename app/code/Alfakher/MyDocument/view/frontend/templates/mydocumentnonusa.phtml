@@ -1,0 +1,248 @@
+<?php
+    $customerid = $block->getCustomerId();
+    $docdata = $block->getDocumentCollection($customerid);
+    $data = $docdata->getData();
+    $dataSize = count($data);
+    $mediaUrl = $block->getMediaUrl();
+    $mediaUrl = $mediaUrl."myDocument/";
+    $pdfImg = $block->getViewFileUrl('images/pdf.svg');
+    $customResultUrl = $block->getUrl('mydocument/customer/result');
+    $deleteDocumentUrl = $block->getUrl('mydocument/customer/deletedocument');
+    $updateDocumentUrl = $block->getUrl('mydocument/customer/updatedocument');
+    $today = date("Y-m-d");
+?>
+<div class="document-title">
+    <span class="title">
+        <?= $block->escapeHtml(__('My Documents')); ?>
+    </span>
+    <span class="note">
+        <?= $block->escapeHtml(__('(File type supported are JPG, PNG and PDF)')); ?>
+    </span>
+</div>
+<?php if (!empty($data)): ?>
+<div class="my_document">
+    <form id="updatedocument"
+        class="updatedocument"
+        accept-charset="utf-8"
+        enctype="multipart/form-data"
+        data-mage-init='{"validation":{}}'
+        method="post">
+        <div class="updated-container">
+            <?php foreach ($data as $key => $val): ?>
+                <?php if ($val['is_delete'] == 0): ?>
+                    <?php $expiry_date = $val['expiry_date']; ?>
+                    <?php if (($val['status'] == 0 && $val['message'] != null) ||
+                    (($expiry_date <= $today && $expiry_date != ""))): ?>
+                        <?php $rejectedClass = "rejected"; ?>
+                    <?php else: ?>
+                        <?php $rejectedClass = ""; ?>
+                    <?php endif; ?>
+                    <div class="document <?= $block->escapeHtml($rejectedClass); ?>" for="document uploader">
+                        <?php
+                            $fileName = $mediaUrl.$val['filename'];
+                            $checkext = $block->checkExtension($fileName);
+                            $extension = $checkext['extension'];
+                        ?>
+                        <div class="input-file">
+                            <?php if ($extension == "pdf"): ?>
+                                <img src="<?= $block->escapeUrl($pdfImg); ?>" height="34" width="43"
+                                class="pdf-image" alt="pdf documents" />
+                            <?php else: ?>
+                                <img src="<?= $block->escapeUrl($fileName) ; ?>"
+                                height="100px" width="100px" />
+                            <?php endif; ?>
+                            <div class="doc-actions">
+                                <!-- added condiition here[BS] -->
+                                <?php if ($val['status'] == 0 && $val['message'] != null ||
+                                (($expiry_date <= $today && $expiry_date != ""))): ?>
+                                    <a  class="view-doc-link" href="<?= $block->escapeUrl($fileName); ?>"
+                                        target="_blank"></a>
+                                    <a class="deletedocument" name="deletedocument" href="#"
+                                    id="<?= $block->escapeHtml($val['mydocument_id']); ?>"></a>
+                                <?php else: ?>
+                                    <a  class="view-doc-link" href="<?= $block->escapeUrl($fileName);?>"
+                                        target="_blank"></a>
+
+                                <?php endif; ?>
+
+                            </div>
+                            <?php if ($val['status'] != 0 && $val['message'] == null): ?>
+                            <span class="approved">
+                                <img src="<?= $block->escapeUrl($block->getViewFileUrl('images/doc_approved.png')); ?>"
+                                    alt="approved_union"
+                                    width="60"
+                                    height="60"
+                                    loading="lazy" />
+                            </span>
+                            <?php endif; ?>
+                        </div>
+                        <div class="doc-name">
+                            <span><?= $block->escapeHtml($val['filename']); ?></span>
+                            <a  href="<?= $block->escapeUrl($fileName); ?>" target="_blank"
+                                download class="download-doc"></a>
+                        </div>
+                        <div class="field">
+                            <label><?= $block->escapeHtml(__("Document Name"));  ?></label>
+                            <div class="value"><?= $block->escapeHtml($val['document_name']); ?></div>
+                        </div>
+                        <?php if (isset($val['expiry_date'])): ?>
+                        <div class="field">
+                            <div class="value date">
+                                <?= $block->escapeHtml(__('Expiry Date: ') . $val['expiry_date']); ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                        <?php if ($val['status'] == 0 && $val['message'] != null): ?>
+                            <div class="doc-tooltip">
+                                <span class="tooltip-toggle">
+                                    <?= $block->escapeHtml(__('PLEASE CHECK THE DETAILS')); ?>
+                                </span>
+                                <span class="tooltip-content">
+                                    <?= $block->escapeHtml($val['message']); ?>
+                                </span>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+                <?php if ($val['is_delete'] != 0): ?>
+                <div class="upload" for="document uploader">
+                    <div class="update-doc-<?= $block->escapeHtml($val['mydocument_id']);?> input-file">
+                        <input type="hidden" name="documentid[]"
+                        value="<?= $block->escapeHtml($val['mydocument_id']); ?>" />
+                        <input type="file"
+                        name="updatefile<?= $block->escapeHtml($val['mydocument_id']); ?>"
+                        id="updatefile_<?= $block->escapeHtml($val['mydocument_id']); ?>"
+                        data-validate="{required:true}" />
+                        <!-- added span class -->
+                        <span class="input-note">
+                                <?= $block->escapeHtml(__('(Only one document can be uploaded)')); ?>
+                        </span>
+                        <!-- added span class -->
+                        <span id="image-error-message-<?= $block->escapeHtml($val['mydocument_id']); ?>"
+                            style="color:red;"></span>
+                        <img class="previewimage-filename_"
+                        height="170"
+                        width="170"
+                        src="" title=""
+                        style="display:none;"></img>
+                        <div class="doc-actions"
+                        id="doc-actions-filename_<?= $block->escapeHtml($val['mydocument_id']); ?>"
+                        style="display:none;">
+                            <a class="view-doc-link"
+                            id="view-doc-link-filename_<?= $block->escapeHtml($val['mydocument_id']); ?>"
+                            href="" target="_blank"></a>
+                            <a class="deletedocument-preview deletedocument"
+                            id="deletedocument-filename_<?= $block->escapeHtml($val['mydocument_id']); ?>"></a>
+                        </div>
+                    </div>
+                    <div class="doc_name" for="document name">
+                        <label><?= $block->escapeHtml(__('Document Name')); ?></label>
+                        <input type="text" id="name" name="name<?= $block->escapeHtml($val['mydocument_id']); ?>"
+                        data-validate="{required:true}"
+                        value="<?= $block->escapeHtml($val['document_name']); ?>"/>
+                    </div>
+                    <div class="set_expiry" for="document expiry data" style="position:relative;">
+                        <label><?= $block->escapeHtml(__('Set a Specific Expiry date')); ?></label>
+                        <input type="checkbox" id="toggle-<?= $block->escapeHtml($val['mydocument_id']);
+                        ; ?>"
+                        name="set_expiry[]"
+                        class="update-toggle cmn-toggle cmn-toggle-round"/>
+                        <span class="slider round"></span>
+                        <div class="expiry_dates expiry_dates-toggle-<?= $block->escapeHtml($val['mydocument_id']); ?>"
+                            for="document expiry data"
+                            style="display:none">
+                            <label><?= $block->escapeHtml(__('Set Expiry Date')); ?></label>
+                            <input type="text"
+                                placeholder="Expiry Date"
+                                name="expiry_date<?= $block->escapeHtml($val['mydocument_id']); ?>"
+                                id="expiry_date-<?= $block->escapeHtml($val['mydocument_id']); ?>"
+                                data-validate="{required:true}"
+                                class="update-date" value="" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
+        <button type="submit" id="updatebtnsave" class="action submit primary" style="display:none">
+            <span><?= $block->escapeHtml(__('Submit')); ?></span>
+        </button>
+    </form>
+</div>
+<?php endif; ?>
+<?php if ($dataSize == 0): ?>
+<div class="my_document">
+    <form name="myformdynamic"
+    id="myformdynamic"
+    accept-charset="utf-8"
+    enctype="multipart/form-data"
+    autocomplete="off"
+    data-mage-init='{"validation":{}}'
+    method="post">
+        <div class="upload-container">
+            <div class="upload" for="document uploader">
+                <div class="input-file">
+                    <input type="file" id="filename-1" class="upload-filename" name="filename1"
+                    data-validate="{required:true}"/>
+                    <span id="image-error-message-1" style="color:red;"></span>
+                    <span class="input-note"><?= $block->escapeHtml(__('(Only one document can be uploaded)')) ?></span>
+                    <!-- bv_vv; date:04-02-2022; File Preview Start; -->
+                    <img class="previewimage-filename-1" height="170" width="170"
+                    src="" title="" style="display:none;"></img>
+                    <div class="doc-actions" id="doc-actions-filename-1" style="display:none;">
+                        <a class="view-doc-link" id="view-doc-link-filename-1" href="" target="_blank"></a>
+                        <a class="deletedocument-preview deletedocument" id="deletedocument-filename-1"></a>
+                    </div>
+                </div>
+
+                <!-- bv_vv; date:04-02-2022; File Preview End; -->
+                <div class="doc_name" for="document name">
+                    <label><?= $block->escapeHtml(__('Document Name')); ?></label>
+                    <input type="text" id="name" name="name1" data-validate="{required:true}" />
+                </div>
+                <div class="set_expiry" for="document expiry data" style="display:none" >
+                    <label><?= $block->escapeHtml(__('Set a Specific Expiry date')); ?></label>
+                    <input type="checkbox" id="toggle" name="set_expiry[]" class="cmn-toggle cmn-toggle-round" />
+                    <span class="slider round" />
+                    <div class="expiry_dates" for="document expiry data" style="display:none">
+                        <label><?= $block->escapeHtml(__('Set Expiry Date')); ?></label>
+                        <input type="text"
+                            placeholder="Expiry Date"
+                            name="expiry_date1"
+                            id="expiry_date-1" data-validate="{required:true}" readonly />
+                    </div>    
+                </div>
+            </div>
+            <input type="hidden" id="is_add_more_form1" name="is_add_more_form[]" value="0"/>
+            <div class="add-more-cont">
+                <a id="add_more"><?= $block->escapeHtml(__('Add More Document')); ?></a>
+            </div>
+        </div>
+        <button type="submit" id="btnsave" class="action submit primary" style="display:none">
+            <span><?= $block->escapeHtml(__('Submit')); ?></span>
+        </button>
+    </form>
+</div>
+<?php endif; ?>
+<div id="popup-modal" style="display:none">
+    <img src="<?= $block->escapeUrl($block->getViewFileUrl('images/success_union.svg')); ?>"
+        alt="success_union"
+        width="60"
+        height="60"
+        loading="lazy" />
+    <h1 class="success_msg"><?= $block->escapeHtml(__('DOCUMENTS ARE UPLOADED SUCCESSFULLY')); ?></h1>
+    <h5><?= $block->escapeHtml(__('Once it is approved by Admin, Product price would be visible to you.')); ?></h5>
+</div>
+<script type="text/x-magento-init">
+{
+    "*": {
+        "Alfakher_MyDocument/js/document": {
+            "pdfImg": "<?= $block->escapeUrl($pdfImg); ?>",
+            "inputNote": "<?= $block->escapeHtml(__('(Only one document can be uploaded)')); ?>",
+            "customResultUrl": "<?= $block->escapeUrl($customResultUrl); ?>",
+            "deleteDocumentUrl": "<?= $block->escapeUrl($deleteDocumentUrl); ?>",
+            "updateDocumentUrl": "<?= $block->escapeUrl($updateDocumentUrl); ?>"
+        }
+    }
+}
+</script>

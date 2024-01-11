@@ -1,0 +1,39 @@
+<?php
+//phpcs:disable
+/* Start Document Varification msgs */
+//helper boolean
+$_helperB2b = $this->helper(Alfakher\Productpageb2b\Helper\Data::class);
+$docdata = $_helperB2b->getDocMessageData();
+$exp_msg = $_helperB2b->getExpiryMsg();
+$is_document_upload = $_helperB2b->getDocuments();
+$IsFinanceVerified = $_helperB2b->getIsFinanceVerified();
+
+//get System config values
+$documents_required_msg = $_helperB2b->getConfigValue(
+    'hookahshisha/productpage/productpageb2b_documents_verification_required'
+);
+$guest_user_documnet_msg = $_helperB2b->getConfigValue(
+    'hookahshisha/productpage/productpageb2b_documents_msg_for_guest'
+);
+?>
+<?php /*We have Remove all the document releted msg as per suggested by arina [B2BHW-846]  */ ?>
+<?php if ($_helperB2b->isCustomerLoggedIn()): ?>
+    <?php if ($IsFinanceVerified != 1):?>  
+        <div class="pending-tooltip">
+            <div class="tooltip-inner">
+                <?= $block->escapeHtml(__($documents_required_msg)) ?>
+            </div>
+        </div>
+    <?php endif; ?>
+<?php else: ?>
+     <div class="pending-tooltip">
+        <div class="tooltip-inner">
+            <?= $block->escapeHtml(__($guest_user_documnet_msg)) ?>
+            <a href="<?= /* @noEscape */ $block->getBaseUrl()."customer/account/create/" ?>">
+                <?= $block->escapeHtml(__('CLICK HERE')) ?>
+            </a>
+        </div>
+     </div>    
+<?php endif; ?> 
+
+

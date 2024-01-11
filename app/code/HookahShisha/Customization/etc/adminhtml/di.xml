@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <!-- add ststus column in customer tab order listin -->
+    <preference for="Magento\Customer\Block\Adminhtml\Edit\Tab\Orders"
+                type="HookahShisha\Customization\Block\Adminhtml\Edit\Tab\Orders"/>
+
+    <type name="Magento\Sales\Model\Order">
+        <plugin name="commentPlugin" type="HookahShisha\Customization\Plugin\Order\PlaceOrderAroundPlugin"/>
+    </type>
+
+    <preference for="Magento\GroupedProduct\Ui\DataProvider\Product\Form\Modifier\Grouped" type="HookahShisha\Customization\Ui\DataProvider\Product\Form\Modifier\Grouped" />
+    
+    <virtualType name="Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Pool">
+        <arguments>
+             <argument name="modifiers" xsi:type="array">
+                <item name="grouped" xsi:type="array">
+                    <item name="class" xsi:type="string">HookahShisha\Customization\Ui\DataProvider\Product\Form\Modifier\Grouped</item>
+                    <item name="sortOrder" xsi:type="number">120</item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- add handeling fee in invoice pdf -->
+    <type name="Magento\Tax\Model\Sales\Pdf\Shipping">
+        <plugin name="handelingFeeplugin" type="HookahShisha\Customization\Model\Sales\Pdf\AfterShipping"/>
+    </type>
+
+    <!--subtotal issue solve in invoice pdf -->
+    <type name="Magento\Tax\Model\Sales\Pdf\Subtotal">
+        <plugin name="subtotalAfterPlugin" type="HookahShisha\Customization\Model\Sales\Pdf\AfterSubtotal"/>
+    </type>
+    
+    <!-- removed clone as quote from sales order grid -->
+    <type name="Magento\Sales\Ui\Component\Listing\Column\ViewAction">
+        <plugin name="Amasty_Request::add-quote-button-listing" disabled="true" />
+    </type>
+    
+</config>

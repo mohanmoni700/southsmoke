@@ -1,0 +1,11 @@
+<?php
+$rejection = $block->getRejectedDoc();
+
+foreach ($rejection as $item): ?>
+        <tr>
+            <td><?= /* @noEscape */ $item['docname'] ?></td>
+            <td class="approved_doc"><?= /* @noEscape */ !empty($item['docmsg']) ?
+                $block->escapeHtml(__('Rejected')) : $block->escapeHtml(__('Approved')) ?></td>
+            <td class="rejected_doc"><?= /* @noEscape */ !empty($item['docmsg']) ? $item['docmsg'] : "-" ?></td>
+        </tr> 
+<?php endforeach;?>

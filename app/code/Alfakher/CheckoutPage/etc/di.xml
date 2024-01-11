@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Checkout\Block\Checkout\AttributeMerger">
+        <plugin name="add_placeholder_to_checkout"
+            type="Alfakher\CheckoutPage\Plugin\Block\Checkout\AttributeMerger"
+            sortOrder="10"/>
+    </type>
+    <type name="Magento\Checkout\Block\Checkout\LayoutProcessor">
+        <plugin name="Custom_Checkout" type="Alfakher\CheckoutPage\Block\Checkout\LayoutProcessor" sortOrder="100"/>
+    </type>
+    <type name="Magento\Payment\Model\MethodList">
+        <plugin name="hide_payment_methods_based_on_country" type="Alfakher\CheckoutPage\Plugin\Frontend\Model\Payment\HidePaymentMethods" sortOrder="10" disabled="false"/>
+    </type>
+</config>

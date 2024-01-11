@@ -1,0 +1,353 @@
+//  /**
+//  * Copyright © Magento, Inc. All rights reserved.
+//  * See COPYING.txt for license details.
+//  */
+
+//
+//  Variables
+//  _____________________________________________
+
+@checkout-payment-option-title__border: @checkout-payment-method-title__border;
+@checkout-payment-option-title__color: @color-black;
+@checkout-payment-option-title__padding: @checkout-payment-method-title__padding;
+@checkout-payment-option-title-mobile__padding: @checkout-payment-method-title-mobile__padding;
+
+@checkout-payment-option-title-icon__font-size: 32px;
+@checkout-payment-option-title-icon__line-height: 16px;
+@checkout-payment-option-title-icon__margin: 0;
+@checkout-payment-option-title-icon__color: @color-black;
+@checkout-payment-option-title-icon__hover__color: @primary__color;
+
+@checkout-payment-option-content__padding__xl: 20px;
+
+//
+//  Common
+//  _____________________________________________
+
+& when (@media-common = true) {
+    .checkout-payment-method {
+        .payment-option {
+            &._active {
+                .payment-option-title {
+                    .action-toggle {
+                        &:after {
+                            content: @icon-up;
+                        }
+                    }
+                }
+            }
+
+            &._collapsible {
+                .payment-option-title {
+                    cursor: pointer;
+                    padding-left: 0;
+                }
+
+                .payment-option-content {
+                    display: none;
+                    padding-left: 0;
+                }
+            }
+        }
+
+        .payment-option-title {
+            .lib-css(border-top, @checkout-payment-option-title__border);
+            .lib-css(padding, @checkout-payment-option-title__padding 0);
+
+            .action-toggle {
+                .lib-css(color, @checkout-payment-option-title__color);
+                font-weight: 700;
+                .lib-icon-font(
+                    @icon-down,
+                    @_icon-font-size: @checkout-payment-option-title-icon__font-size,
+                    @_icon-font-line-height: @checkout-payment-option-title-icon__line-height,
+                    @_icon-font-color: @checkout-payment-option-title-icon__color,
+                    @_icon-font-color-hover: @checkout-payment-option-title-icon__hover__color,
+                    @_icon-font-color-active: @checkout-payment-option-title-icon__color,
+                    @_icon-font-margin: @checkout-payment-option-title-icon__margin,
+                    @_icon-font-position: after
+                );
+            }
+        }
+
+        .payment-option-content {
+            .lib-css(padding, 0 0 @indent__base @checkout-payment-option-content__padding__xl);
+
+            .form-discount,
+            .form-giftcard-account {
+                position: relative;
+                input {
+                    border-color: @hookah_theme_color;
+                    border-radius: 30px;
+                    color: @color-black;
+                    height: 35px;
+                    padding-right: 130px;
+                    text-transform: capitalize;
+                }
+                .actions-toolbar .primary {
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                    button {
+                        background: @hookah_theme_color;
+                        border-color: @hookah_theme_color;
+                        border-radius: 0;
+                        border-radius: 0 30px 30px 0;
+                        color: @color-white;
+                        font-size: 1.2rem;
+                        letter-spacing: 2px;
+                        line-height: 22px;
+                        margin-right: 0;
+                        min-width: 160px;
+                        padding: 5.5px 20px;
+                        &:hover {
+                            background: @hookah_theme_gradient;
+                            border-color: transparent;
+                            border-left-color: @border_left_gradient;
+                            border-right-color: @border_right_gradient;
+                        }
+                    }
+                }
+                .actions-toolbar .secondary {
+                    button {
+                        background: transparent;
+                        border: none;
+                        border-radius: 0;
+                        box-shadow: none;
+                        color: @hookah_theme_color;
+                        padding: 0;
+                        text-decoration: underline;
+                    }
+                }
+            }
+
+        }
+
+        .payment-option-inner {
+            margin: 0 0 @indent__base;
+        }
+
+        .credit-card-types {
+            padding: 0;
+
+            .item {
+                display: inline-block;
+                list-style: none;
+                margin: 0 @indent__xs 0 0;
+                vertical-align: top;
+
+                &._active {
+                    font-weight: @font-weight__bold;
+
+                    img {
+                        -webkit-filter: grayscale(0%);
+                    }
+                }
+
+                &._inactive {
+                    opacity: .4;
+                }
+
+                span {
+                    display: inline-block;
+                    padding-top: 6px;
+                    vertical-align: top;
+                }
+            }
+
+            img {
+                -webkit-filter: grayscale(100%); // For Webkit browsers
+                -webkit-transition: all .6s ease; // Fade to color for Chrome and Safari
+            }
+        }
+
+        .ccard {
+            .legend {
+                &:extend(.abs-visually-hidden all);
+            }
+
+            .fields {
+                > .year {
+                    padding-left: 20px;
+                }
+
+                .select {
+                    padding-left: @indent__xs;
+                    padding-right: @indent__xs;
+                }
+            }
+
+            .month {
+                .select {
+                    background-position: calc(~'100% - 10px');
+                    padding-right: 32px;
+                    width: 150px;
+                }
+            }
+
+            .year {
+                .select {
+                    background-position: calc(~'100% - 10px');
+                    padding-right: 32px;
+                    width: 150px;
+                }
+            }
+
+            .captcha,
+            .number {
+                .input-text {
+                    width: 100%;
+                }
+            }
+
+            > .field.cvv {
+                > .control {
+                    padding-right: @indent__base;
+                    width: auto;
+                }
+            }
+
+            .cvv {
+                .input-text {
+                    width: 120px;
+                }
+                .action.cvv {
+                    color: @color-black;
+                }
+            }
+
+            &.fieldset {
+                > .field {
+                    .fields.group.group-2 {
+                        .field {
+                            width: auto !important;
+                        }
+                    }
+                }
+            }
+        }
+        .payment-method-billing-address {
+            margin-bottom: 30px;
+        }
+    }
+    #co-payment-form {
+        .fieldset {
+            > br,
+            > hr {
+                display: none;
+            }
+        }
+    }
+
+    @media only screen and (max-width: 1199px) and (min-width: 992px) {
+        .checkout-payment-method {
+            .ccard {
+                .month,
+                .year {
+                    .select {
+                        padding-right: 32px;
+                        width: 120px;
+                    }
+                }
+            }
+        }
+    }
+    @media only screen and (max-width: 992px) and (min-width: 768px) {
+        .checkout-payment-method {
+            .payment-method-content {
+                .fieldset {
+                    > .field {
+                        &.number,
+                        &.date {
+                            width: 100%;
+                        }
+                        &.cvv {
+                            ~ .field {
+                                padding-left: 0 !important;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .opc-block-summary,
+        .opc-block-shipping-information {
+            padding: 14px;
+        }
+    }
+    @media only screen and (max-width: 370px) {
+        .checkout-payment-method {
+            .ccard {
+                .month,
+                .year {
+                    select.select {
+                        width: 120px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+//
+//  Mobile
+//  _____________________________________________
+
+.media-width(@extremum, @break) when (@extremum = 'max') and (@break = @screen__m) {
+    .checkout-payment-method {
+        .payment-method-content {
+            .fieldset {
+                > .field {
+                    &.cvv {
+                        width: auto;
+                    }
+                    &.date {
+                        margin-right: 10px;
+                        width: auto;
+                    }
+                }
+            }
+        }
+        .ccard {
+            .fields {
+                > .year {
+                    padding-left: 5px;
+                }
+            }
+            .month,
+            .year {
+                .select {
+                    background-position: calc(~'100% - 6px');
+                    background-size: 10px;
+                    padding-right: 18px;
+                    width: 80px;
+                }
+            }
+            .cvv {
+                .input-text {
+                    width: 110px;
+                }
+            }
+        }
+    }
+}
+
+//
+//  Desktop
+//  _____________________________________________
+
+.media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__m) {
+    .checkout-payment-method {
+        .payment-option-title {
+            .lib-css(padding-left, @checkout-payment-option-content__padding__xl);
+        }
+
+        .payment-option-content {
+            .payment-option-inner {
+                + .actions-toolbar {
+                    margin-left: 0;
+                }
+            }
+        }
+    }
+}
